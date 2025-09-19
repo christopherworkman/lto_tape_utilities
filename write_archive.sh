@@ -10,8 +10,41 @@ set -euo pipefail
 FOLDER="/mnt/staging"
 FILE="round_2_c2_2702.nd2"               # ← change this to back up a different file
 TAPE="/dev/nst0"                  # non‑rewind tape device
-LOG="${FILE%.*}_tar.log"          # e.g. filename_tar.log
 # ────────────────────────────────────────────────────────────────
+
+# ─── ARG PARSING ────────────────────────────────────────────────
+# If an argument is given:
+#  - if it has a slash, treat it as a full path
+#  - otherwise, treat it as a filename under $FOLDER
+if [[ "${1-}" ]]; then
+  if [[ "$1" == */* ]]; then
+    SRC_PATH="$1"
+    FOLDER="$(dirname -- "$SRC_PATH")"
+    FILE="$(basename -- "$SRC_PATH")"
+  else
+    FILE="$1"
+    SRC_PATH="$FOLDER/$FILE"
+  fi
+else
+  SRC_PATH="$FOLDER/$FILE"
+fi
+
+LOG="${FILE%.*}_tar.log"
+
+usage() {
+  echo "Usage: sudo ./write_archive.sh [filename | /full/path/to/file]"
+  echo "If no argument is given, defaults to: $FOLDER/$FILE"
+}
+
+# ─── BASIC VALIDATION ───────────────────────────────────────────
+if [[ "${1-}" == "-h" || "${1-}" == "--help" ]]; then
+  usage; exit 0
+fi
+
+if [[ ! -f "$SRC_PATH" ]]; then
+  echo "ERROR: Source file not found: $SRC_PATH" >&2
+  exit 1
+fi
 
 # Detach stdin, and redirect both stdout & stderr into the log
 exec > "$LOG" 2>&1 </dev/null
@@ -27,6 +60,6 @@ sudo mt -f "$TAPE" eod  || { echo "ERROR: mt eod failed"; exit 1; }
 sudo mt -f "$TAPE" status
 
 # The actual tar‑to‑tape write
-tar -cvf "$TAPE" "$FOLDER"/"$FILE"
+tar -cvf "$TAPE" "$SRC_PATH"
 
 echo "Backup of $FILE completed at $(date)"
