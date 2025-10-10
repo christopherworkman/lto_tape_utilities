@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Run this with:
 # sudo -v
-# sudo ./write_archive.sh &
+# sudo nohup ./write_archive.sh &
 # less "${FILE%.*}_tar.log"
 
 # ─── CONFIGURATION ───────────────────────────────────────────────
