@@ -8,8 +8,8 @@ set -euo pipefail
 
 # ─── CONFIGURATION ───────────────────────────────────────────────
 FOLDER="/mnt/staging"
-FILE="round_2_c2_2702.nd2"               # ← change this to back up a different file
-TAPE="/dev/nst0"                  # non‑rewind tape device
+FILE="NAF3"               # ← change this to back up a different file
+TAPE="/dev/nst0"                  # non-rewind tape device
 # ────────────────────────────────────────────────────────────────
 
 # ─── ARG PARSING ────────────────────────────────────────────────
@@ -41,7 +41,8 @@ if [[ "${1-}" == "-h" || "${1-}" == "--help" ]]; then
   usage; exit 0
 fi
 
-if [[ ! -f "$SRC_PATH" ]]; then
+# CHANGED: allow files OR directories
+if [[ ! -e "$SRC_PATH" ]]; then
   echo "ERROR: Source file not found: $SRC_PATH" >&2
   exit 1
 fi
@@ -59,7 +60,7 @@ echo "Positioning tape to EOD…"
 sudo mt -f "$TAPE" eod  || { echo "ERROR: mt eod failed"; exit 1; }
 sudo mt -f "$TAPE" status
 
-# The actual tar‑to‑tape write
+# The actual tar-to-tape write
 tar -cvf "$TAPE" "$SRC_PATH"
 
 echo "Backup of $FILE completed at $(date)"
