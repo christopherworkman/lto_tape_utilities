@@ -35,7 +35,7 @@ fsf to desired archive
 sudo -v
 sudo nohup bash -c '
   tar -xvf /dev/nst0 -C /mnt/staging \
-      --strip-components=2 "mnt/staging/filename.ext" \
+      --strip-components=2 "/mnt/staging/filename.ext" \
     > /mnt/staging/log_title.log 2>&1
 ' &
 
