@@ -9,7 +9,7 @@ sudo nohup ./write_archive.sh path_to_file &
 ```
 # Monitor Progress
 ```
-less "${FILE%.*}_tar.log"
+tail -f "${FILE%.*}_tar.log"
 ```
 # Quickly read the name of the first file in each archive
 ```
