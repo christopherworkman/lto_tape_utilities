@@ -5,7 +5,7 @@ Ti2 Microscope computer mounted at /mnt/winG and /mnt/winD
 # Run write_archive.sh to write archive
 ```
 sudo -v
-sudo nohup ./write_archive.sh &
+sudo nohup ./write_archive.sh path_to_file &
 ```
 # Monitor Progress
 ```
